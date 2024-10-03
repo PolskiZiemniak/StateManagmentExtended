@@ -12,13 +12,11 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String KEY_COUNTER = "counter";
-    private static final String KEY_USERTEXT = "userText";
-    private static final String KEY_CHECKBOX = "checkBox";
-    private static final String KEY_SWITCH = "changeMode";
+    private CountViewModel countViewModel;
 
     private TextView showNumber;
     private Button increaseNumber;
@@ -28,10 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private Switch aSwitch;
     private ConstraintLayout background;
 
-    private int counter = 0;
-    private String text = "";
-    private Boolean isChecked = false;
-    private Boolean isSwitched = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,55 +41,43 @@ public class MainActivity extends AppCompatActivity {
         aSwitch = findViewById(R.id.changeMode);
         background = findViewById(R.id.main);
 
-        if(savedInstanceState != null){
-            counter = savedInstanceState.getInt(KEY_COUNTER);
-            text = savedInstanceState.getString(KEY_USERTEXT);
-            isChecked = savedInstanceState.getBoolean(KEY_CHECKBOX);
-            isSwitched = savedInstanceState.getBoolean(KEY_SWITCH);
-        }
+        countViewModel = new ViewModelProvider(this).get(CountViewModel.class);
+
         updateCounter();
         updateUserText();
         updateCheckbox();
         updateSwitch();
-
         increaseNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                counter++;
+                countViewModel.incrementCount();
                 updateCounter();
             }
         });
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isChecked = checkBox.isChecked();
+                countViewModel.setChecked(checkBox.isChecked());
                 updateCheckbox();
             }
         });
         aSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isSwitched = aSwitch.isChecked();
+                countViewModel.setSwitched(aSwitch.isChecked());
                 updateSwitch();
             }
         });
-    }
-    @Override
-    protected void onSaveInstanceState(Bundle outState){
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_COUNTER, counter);
-        outState.putString(KEY_USERTEXT, text);
-        outState.putBoolean(KEY_CHECKBOX, isChecked);
-        outState.putBoolean(KEY_SWITCH, isSwitched);
+
     }
     private void updateCounter(){
-        showNumber.setText("Ilość kliknięć: "+counter);
+        showNumber.setText("Ilość kliknięć: "+countViewModel.getCounter());
     }
     private void updateUserText(){
-        userText.setText(text);
+        userText.setText(countViewModel.getText());
     }
     private void updateCheckbox(){
-        if(isChecked){
+        if(countViewModel.getIsChecked()){
             hiddenText.setVisibility(View.VISIBLE);
             checkBox.setChecked(true);
         }else {
@@ -104,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void updateSwitch(){
-        if (isSwitched) {
+        if (countViewModel.getIsSwitched()) {
             background.setBackgroundColor(Color.BLACK);
             aSwitch.setChecked(true);
         }else {
@@ -112,4 +94,5 @@ public class MainActivity extends AppCompatActivity {
             aSwitch.setChecked(false);
         }
     }
+
 }
