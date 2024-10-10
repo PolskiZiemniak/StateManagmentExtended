@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">StateManagmentExtended</string>
+    <string name="counter">Ilość kliknięć: 0</string>
+    <string name="button">Zwiększ liczbę</string>
+    <string name="editText">Text</string>
+    <string name="hiddentext">Opcja zaznaczona</string>
 </resources>

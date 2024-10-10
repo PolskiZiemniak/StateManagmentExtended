@@ -1,8 +1,6 @@
 package com.example.statemanagmentextended;
 
-import androidx.lifecycle.ViewModel;
-
-public class CountViewModel extends ViewModel {
+public class StateViewModel extends androidx.lifecycle.ViewModel {
     private int counter = 0;
     private String text = "";
     private Boolean isChecked = false;

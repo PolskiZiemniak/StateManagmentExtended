@@ -2,6 +2,8 @@ package com.example.statemanagmentextended;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,7 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 public class MainActivity extends AppCompatActivity {
 
-    private CountViewModel countViewModel;
+    private StateViewModel stateViewModel;
 
     private TextView showNumber;
     private Button increaseNumber;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         aSwitch = findViewById(R.id.changeMode);
         background = findViewById(R.id.main);
 
-        countViewModel = new ViewModelProvider(this).get(CountViewModel.class);
+        stateViewModel = new ViewModelProvider(this).get(StateViewModel.class);
 
         updateCounter();
         updateUserText();
@@ -50,34 +52,50 @@ public class MainActivity extends AppCompatActivity {
         increaseNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                countViewModel.incrementCount();
+                stateViewModel.incrementCount();
                 updateCounter();
             }
         });
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                countViewModel.setChecked(checkBox.isChecked());
+                stateViewModel.setChecked(checkBox.isChecked());
                 updateCheckbox();
             }
         });
         aSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                countViewModel.setSwitched(aSwitch.isChecked());
+                stateViewModel.setSwitched(aSwitch.isChecked());
                 updateSwitch();
             }
         });
 
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                stateViewModel.setText(userText.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
+        userText.addTextChangedListener(textWatcher);
     }
     private void updateCounter(){
-        showNumber.setText("Ilość kliknięć: "+countViewModel.getCounter());
+        showNumber.setText("Ilość kliknięć: "+ stateViewModel.getCounter());
     }
     private void updateUserText(){
-        userText.setText(countViewModel.getText());
+        userText.setText(stateViewModel.getText());
     }
     private void updateCheckbox(){
-        if(countViewModel.getIsChecked()){
+        if(stateViewModel.getIsChecked()){
             hiddenText.setVisibility(View.VISIBLE);
             checkBox.setChecked(true);
         }else {
@@ -86,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void updateSwitch(){
-        if (countViewModel.getIsSwitched()) {
+        if (stateViewModel.getIsSwitched()) {
             background.setBackgroundColor(Color.BLACK);
             aSwitch.setChecked(true);
         }else {
